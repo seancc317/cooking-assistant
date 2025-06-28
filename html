@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Buddy - Your Cooking Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f3ff 0%, #fef5f5 50%, #fff5f0 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            color: #1f2937;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .checkbox-container {
+            background: linear-gradient(135deg, #f3f4f6, #fef3f3);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+        }
+        
+        .assistant-message {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 16px;
+            background: #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899, #f97316);
+            transition: width 0.5s ease;
+        }
+        
+        .step-container {
+            background: linear-gradient(135deg, #f3f0ff, #fff0f8);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            border-radius: 12px;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .mic-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+        
+        .mic-button.listening {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, #ef4444, #ec4899);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .timer {
+            background: linear-gradient(135deg, #dbeafe, #e9d5ff);
+            padding: 16px;
+            border-radius: 12px;
+            margin: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .timer-display {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e40af;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .listening-indicator {
+            background: #d1fae5;
+            border: 1px solid #6ee7b7;
+            color: #047857;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="card">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">👨‍🍳</div>
+                    <div>
+                        <h1>Kitchen Buddy</h1>
+                        <p class="subtitle">Your cheerful cooking companion</p>
+                    </div>
+                </div>
+                <button class="btn" onclick="loadRecipe()">Try Sample Recipe 🍗</button>
+            </div>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="alwaysListening" onchange="toggleAlwaysListening()">
+                <label for="alwaysListening">
+                    <strong>Enable hands-free mode 🎤</strong><br>
+                    <small>To make sure you don't get sauce all over your device, we can keep your mic on throughout the cooking process. You'll be able to talk naturally without pressing any buttons!</small>
+                </label>
+            </div>
+        </div>
+
+        <!-- Assistant Message -->
+        <div class="card">
+            <div class="assistant-message" id="assistantMessage">
+                Hey there, chef! 👋 Ready to cook something amazing? Just click "Try Sample Recipe" and I'll be your personal kitchen buddy!
+            </div>
+        </div>
+
+        <!-- Recipe Progress -->
+        <div id="recipeSection" style="display: none;">
+            <div class="card">
+                <h2 id="recipeTitle">Roasted Chicken with Root Vegetables</h2>
+                <p>Step <span id="currentStepNum">1</span> of <span id="totalSteps">7</span> - <span id="progressPercent">14</span>% Complete</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 14%"></div>
+                </div>
+                
+                <div class="step-container">
+                    <div class="step-number" id="stepNumber">1</div>
+                    <h3>Current Step</h3>
+                    <p id="stepInstruction" style="margin-top: 12px; line-height: 1.6;">
+                        Take your large yellow onion and cut off both ends. Peel off the papery outer skin. Cut the onion in half from top to bottom. Place each half flat-side down, make horizontal cuts parallel to the cutting board (but don't cut all the way through), then make vertical cuts from top to bottom, and finally cut across to create dice.
+                    </p>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" style="background: #e5e7eb; color: #374151;" onclick="previousStep()">Previous</button>
+                    <button class="btn" style="flex: 1;" onclick="nextStep()">Next Step →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timers -->
+        <div id="timersSection" style="display: none;">
+            <div class="card">
+                <h3>⏰ Active Timers</h3>
+                <div id="timersList"></div>
+            </div>
+        </div>
+
+        <!-- Voice Control -->
+        <div class="card">
+            <h3>Voice Assistant</h3>
+            <p style="color: #6b7280; margin-bottom: 16px;">Ask me anything about the recipe!</p>
+            <button class="mic-button" id="micButton" onclick="toggleListening()">🎤</button>
+            <div id="listeningIndicator" style="display: none;" class="listening-indicator">
+                <div class="pulse-dot"></div>
+                <span>Mic is always listening - just talk naturally!</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentStep = 0;
+        let isListening = false;
+        let alwaysListening = false;
+        let recipeLoaded = false;
+        let awaitingResponse = null;
+        let timers = [];
+        let recognition = null;
+
+        // Recipe data
+        const recipe = {
+            title: "Roasted Chicken with Root Vegetables",
+            steps: [
+                {
+                    instruction: "dice one large yellow onion into roughly 1/2 inch pieces",
+                    detailed: "Take your large yellow onion and cut off both ends. Peel off the papery outer skin. Cut the onion in half from top to bottom. Place each half flat-side down, make horizontal cuts parallel to the cutting board (but don't cut all the way through), then make vertical cuts from top to bottom, and finally cut across to create dice.",
+                    time: null
+                },
+                {
+                    instruction: "peel and chop your 3 carrots and 2 potatoes into 1-inch chunks",
+                    detailed: "Using a vegetable peeler, peel all 3 carrots and 2 potatoes. For the carrots, cut them into rounds about 1 inch thick. For the potatoes, cut them in half lengthwise, then cut each half into 3-4 chunks. Try to keep all pieces roughly the same size - about 1 inch - so they cook evenly.",
+                    time: null
+                },
+                {
+                    instruction: "season your whole chicken inside and out",
+                    detailed: "Pat the chicken completely dry with paper towels - this is crucial for crispy skin! Sprinkle salt inside the cavity of the chicken. Then season the outside all over with the remaining salt, pepper, and dried herbs. Really get in there and make sure every part is seasoned. Don't forget the back!",
+                    time: null
+                },
+                {
+                    instruction: "heat 2 tablespoons of olive oil in a large oven-safe skillet",
+                    detailed: "Place your oven-safe skillet or roasting pan on the stove over medium-high heat. Add the 2 tablespoons of olive oil and swirl it around to coat the bottom. The oil is ready when it shimmers and moves easily in the pan - about 2-3 minutes.",
+                    time: null
+                },
+                {
+                    instruction: "brown the seasoned chicken on all sides",
+                    detailed: "Carefully place the chicken breast-side down in the hot oil. Let it sizzle without moving it for about 4-5 minutes until golden brown. Using tongs, carefully flip the chicken to brown the back for another 4-5 minutes. Then turn it breast-side up.",
+                    time: 10
+                },
+                {
+                    instruction: "arrange vegetables around the chicken and put in the oven at 425°F",
+                    detailed: "Scatter your diced onions, carrot chunks, and potato pieces around the chicken in the pan. Drizzle them with any remaining oil and toss to coat. Slide the whole pan into your preheated 425°F oven.",
+                    time: 45
+                },
+                {
+                    instruction: "let the chicken rest before carving",
+                    detailed: "Remove the pan from the oven (use oven mitts!). Transfer the chicken to a cutting board and tent it loosely with aluminum foil. Let it rest for 10 minutes - this allows the juices to redistribute throughout the meat.",
+                    time: 10
+                }
+            ]
+        };
+
+        // Speech synthesis
+        function speak(message) {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(message.replace(/[🎉🎊👋👨‍🍳🙌⏰]/g, ''));
+                utterance.rate = 0.95;
+                utterance.pitch = 1.1;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Update UI
+        function updateUI() {
+            const step = recipe.steps[currentStep];
+            document.getElementById('currentStepNum').textContent = currentStep + 1;
+            document.getElementById('stepNumber').textContent = currentStep + 1;
+            document.getElementById('stepInstruction').textContent = step.detailed;
+            
+            const progress = Math.round(((currentStep + 1) / recipe.steps.length) * 100);
+            document.getElementById('progressPercent').textContent = progress;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Load recipe
+        function loadRecipe() {
+            recipeLoaded = true;
+            document.getElementById('recipeSection').style.display = 'block';
+            
+            const message = `Awesome! 🎉 We're making Roasted Chicken with Root Vegetables! This delicious meal serves 4 people and will take about 45 minutes in the oven. When you're ready to start cooking, just say "ready" or press the microphone button!`;
+            
+            document.getElementById('assistantMessage').textContent = message;
+            speak(message);
+            awaitingResponse = 'ready';
+            
+            if (alwaysListening) {
+                startListening();
+            }
+        }
+
+        // Toggle always listening
+        function toggleAlwaysListening() {
+            alwaysListening = document.getElementById('alwaysListening').checked;
+            if (alwaysListening && recipeLoaded) {
+                document.getElementById('listeningIndicator').style.display = 'flex';
+                startListening();
+            } else {
+                document.getElementById('listeningIndicator').style.display = 'none';
+                stopListening();
+            }
+        }
+
+        // Voice recognition
+        function startListening() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = alwaysListening;
+                recognition.interimResults = false;
+                
+                recognition.onstart = () => {
+                    isListening = true;
+                    document.getElementById('micButton').classList.add('listening');
+                };
+                
+                recognition.onresult = (event) => {
+                    const transcript = event.results[event.results.length - 1][0].transcript;
+                    handleVoiceCommand(transcript);
+                };
+                
+                recognition.onerror = () => {
+                    isListening = false;
+                    document.getElementById('micButton').classList.remove('listening');
+                };
+                
+                recognition.onend = () => {
+                    if (alwaysListening && recipeLoaded) {
+                        recognition.start();
+                    } else {
+                        isListening = false;
+                        document.getElementById('micButton').classList.remove('listening');
+                    }
+                };
+                
+                recognition.start();
+            }
+        }
+
+        function stopListening() {
+            if (recognition) {
+                recognition.stop();
+            }
+            isListening = false;
+            document.getElementById('micButton').classList.remove('listening');
+        }
+
+        function toggleListening() {
+            if (isListening && !alwaysListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        }
+
+        // Handle voice commands
+        function handleVoiceCommand(command) {
+            const lower = command.toLowerCase();
+            
+            if (awaitingResponse === 'ready' && (lower.includes('ready') || lower.includes('start'))) {
+                awaitingResponse = null;
+                startFirstStep();
+            } else if (lower.includes('next') || lower.includes('done')) {
+                nextStep();
+            } else if (lower.includes('previous') || lower.includes('back')) {
+                previousStep();
+            } else if (lower.includes('repeat')) {
+                repeatStep();
+            }
+        }
+
+        // Start first step
+        function startFirstStep() {
+            const step = recipe.steps[0];
+            const message = `Alright, let's get cooking! 👩‍🍳 First thing we're going to do is ${step.instruction}. Here's exactly how: ${step.detailed}`;
+            document.getElementById('assistantMessage').textContent = message;
+            speak(message);
+        }
+
+        // Navigation
+        function nextStep() {
+            if (currentStep < recipe.steps.length - 1) {
+                currentStep++;
+                updateUI();
+                const step = recipe.steps[currentStep];
+                const message = `Great job! 🙌 Moving on to step ${currentStep + 1}. Now we're going to ${step.instruction}. ${step.detailed}`;
+                document.getElementById('assistantMessage').textContent = message;
+                speak(message);
+                
+                // Handle timers
+                if (step.time) {
+                    setTimeout(() => {
+                        addTimer(step.instruction, step.time);
+                    }, 5000);
+                }
+            } else {
+                const message = `🎊 And that's a wrap! You've just created an absolutely delicious meal! I'm so proud of you - enjoy your homemade masterpiece! 👨‍🍳`;
+                document.getElementById('assistantMessage').textContent = message;
+                speak(message);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateUI();
+                repeatStep();
+            }
+        }
+
+        function repeatStep() {
+            const step = recipe.steps[currentStep];
+            const message = `Let me repeat that! We're going to ${step.instruction}. ${step.detailed}`;
+            document.getElementById('assistantMessage').textContent = message;
+            speak(message);
+        }
+
+        // Timer management
+        function addTimer(name, minutes) {
+            const timer = {
+                id: Date.now(),
+                name: name.substring(0, 20),
+                duration: minutes * 60,
+                remaining: minutes * 60
+            };
+            timers.push(timer);
+            document.getElementById('timersSection').style.display = 'block';
+            
+            const message = `Perfect! Timer's on! ⏰ I've set a ${minutes}-minute timer for you.`;
+            speak(message);
+            
+            updateTimers();
+        }
+
+        function updateTimers() {
+            const timersList = document.getElementById('timersList');
+            timersList.innerHTML = '';
+            
+            timers.forEach(timer => {
+                const timerDiv = document.createElement('div');
+                timerDiv.className = 'timer';
+                timerDiv.innerHTML = `
+                    <span>${timer.name}</span>
+                    <span class="timer-display">${formatTime(timer.remaining)}</span>
+                `;
+                timersList.appendChild(timerDiv);
+            });
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Timer countdown
+        setInterval(() => {
+            timers = timers.map(timer => ({
+                ...timer,
+                remaining: Math.max(0, timer.remaining - 1)
+            })).filter(timer => {
+                if (timer.remaining === 0 && !timer.alerted) {
+                    timer.alerted = true;
+                    speak(`Ding ding! Your ${timer.name} timer is up!`);
+                    setTimeout(() => {
+                        timers = timers.filter(t => t.id !== timer.id);
+                        if (timers.length === 0) {
+                            document.getElementById('timersSection').style.display = 'none';
+                        }
+                        updateTimers();
+                    }, 5000);
+                }
+                return timer.remaining > 0 || !timer.alerted;
+            });
+            
+            if (timers.length > 0) {
+                updateTimers();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
